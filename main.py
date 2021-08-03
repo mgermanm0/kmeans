@@ -6,7 +6,7 @@ import random
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import numpy as np
-from sklearn.datasets import make_blobs, make_circles, make_biclusters, make_moons #Try generating different sets!
+from sklearn.datasets import make_blobs, make_circles, make_biclusters, make_moons, load_iris #Try generating different sets!
 
 # Euclidean distance
 def dist(pointA, pointB):
@@ -84,8 +84,6 @@ def kmeans(data, n_clusters, max_it = None):
         # 2) Update phase
         # 2.1) Save the old centroids
         old_centroids = copy.deepcopy(centroids)
-        for center in centroids:
-            center.fill(0)
 
         # 2.2) Update the centroids: Every centroid moves to the mean value of its cluster.
         for index in range(len(centroids)):
@@ -103,18 +101,21 @@ def kmeans(data, n_clusters, max_it = None):
 if __name__ == '__main__':
     #features = make_moons(n_samples=1000, noise=0.5)
     #features = make_circles(n_samples=1000, noise=0.1)
-    features = make_blobs(n_samples=500, n_features=2, centers=5, cluster_std=3, random_state=1245, return_centers=True)
+    iris = load_iris()
+    features = iris.data[:, :2] #Sepal features only
+    #features = make_blobs(n_samples=500, n_features=2, centers=5, cluster_std=3, random_state=1245, return_centers=True)
 
     # Draw initial dataset
     fig = plt.figure()
     ax = fig.add_subplot()
 
-    for ind, point in enumerate(features[0]):
+    for ind, point in enumerate(features):
         ax.scatter(point[1], point[0])
     plt.show()
 
     # Execute k-means....
-    result, centroids = kmeans(features[0], 5)
+    result, centroids = kmeans(features, 3)
 
     # Draw dataset clustered! :D
-    draw_cluster_plot(features[0], centroids, result, "Final", real_centroids=features[2])
+    #draw_cluster_plot(features[0], centroids, result, "Final", real_centroids=features[2]) #for make_blobs function
+    draw_cluster_plot(features, centroids, result, "Final") # IRIS dataset
